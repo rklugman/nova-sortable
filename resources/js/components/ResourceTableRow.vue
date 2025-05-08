@@ -228,11 +228,12 @@
 import filter from 'lodash/filter'
 import ReordersResources from '../mixins/ReordersResources'
 import {mapGetters} from 'vuex'
-import {Icon} from 'laravel-nova-ui'
+import {Icon, Button} from 'laravel-nova-ui'
 
 export default {
     components: {
         Icon,
+        Button
     },
     emits: ['actionExecuted'],
     mixins: [ReordersResources],
