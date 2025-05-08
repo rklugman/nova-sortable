@@ -6,7 +6,6 @@
             v-if="resources.length > 0"
             class="w-full divide-y divide-gray-100 dark:divide-gray-700"
             data-testid="resource-table"
-            dusk="resource-table"
         >
             <ResourceTableHeader
                 :resource-name="resourceName"
@@ -57,7 +56,7 @@
 </template>
 
 <script>
-import {InteractsWithResourceInformation} from 'laravel-nova'
+import {InteractsWithResourceInformation} from 'laravel-nova-mixins'
 import {VueDraggableNext} from 'vue-draggable-next'
 import ReordersResources from '../mixins/ReordersResources'
 
