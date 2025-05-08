@@ -131,87 +131,65 @@
                 </a>
                 <!-- End CDE Override -->
 
-                <!-- Edit Pivot Button -->
+                <!-- Edit Button -->
                 <Link
-                    v-if="
-            authorizedToUpdateAnyResources &&
-            (relationshipType == 'belongsToMany' ||
-              relationshipType == 'morphToMany')
-          "
+                    v-if="authorizedToUpdateAnyResources"
                     :as="!resource.authorizedToUpdate ? 'button' : 'a'"
+                    v-tooltip.click="viaManyToMany ? __('Edit Attached') : __('Edit')"
+                    :aria-label="viaManyToMany ? __('Edit Attached') : __('Edit')"
+                    :dusk="
+                        viaManyToMany
+                            ? `${resource['id'].value}-edit-attached-button`
+                            : `${resource['id'].value}-edit-button`
+                    "
+                    :href="updateURL"
+                    class="inline-flex items-center justify-center h-9 w-9"
+                    :class="
+                        resource.authorizedToUpdate
+                            ? 'text-gray-500 dark:text-gray-400 hover:[&:not(:disabled)]:text-primary-500 dark:hover:[&:not(:disabled)]:text-primary-500'
+                            : 'disabled:cursor-not-allowed disabled:opacity-50'
+                    "
                     :disabled="!resource.authorizedToUpdate"
-                    v-tooltip.click="__('Edit Attached')"
-                    :aria-label="__('Edit Attached')"
-                    :dusk="`${resource['id'].value}-edit-attached-button`"
-                    :href="
-            $url(
-              `/resources/${viaResource}/${viaResourceId}/edit-attached/${resourceName}/${resource['id'].value}`,
-              {
-                viaRelationship: viaRelationship,
-                viaPivotId: resource['id'].pivotValue,
-              }
-            )
-          "
-                    class="toolbar-button hover:o1-text-primary-500 o1-px-2 disabled:o1-opacity-50 disabled:o1-pointer-events-none"
                     @click.stop
                 >
-                    <Icon type="pencil-alt"/>
-                </Link>
-
-                <!-- Edit Resource Link -->
-                <Link
-                    v-else-if="authorizedToUpdateAnyResources"
-                    :as="!resource.authorizedToUpdate ? 'button' : 'a'"
-                    :disabled="!resource.authorizedToUpdate"
-                    v-tooltip.click="__('Edit')"
-                    :aria-label="__('Edit')"
-                    :dusk="`${resource['id'].value}-edit-button`"
-                    :href="
-            $url(`/resources/${resourceName}/${resource['id'].value}/edit`, {
-              viaResource: viaResource,
-              viaResourceId: viaResourceId,
-              viaRelationship: viaRelationship,
-            })
-          "
-                    class="toolbar-button hover:o1-text-primary-500 o1-px-2 disabled:o1-opacity-50 disabled:o1-pointer-events-none"
-                    @click.stop
-                >
-                    <Icon type="pencil-alt"/>
+                    <span class="flex items-center gap-1">
+                        <span>
+                            <Icon name="pencil-square" type="outline"/>
+                        </span>
+                    </span>
                 </Link>
 
                 <!-- Delete Resource Link -->
-                <button
+                <Button
                     v-if="
-            authorizedToDeleteAnyResources &&
-            (!resource.softDeleted || viaManyToMany)
-          "
+                        authorizedToDeleteAnyResources &&
+                        (!resource.softDeleted || viaManyToMany)
+                    "
+                    @click.stop="openDeleteModal"
                     v-tooltip.click="__(viaManyToMany ? 'Detach' : 'Delete')"
                     :aria-label="__(viaManyToMany ? 'Detach' : 'Delete')"
-                    :data-testid="`${testId}-delete-button`"
+                    :dusk="`${resource.id.value}-delete-button`"
+                    icon="trash"
+                    variant="action"
                     :disabled="!resource.authorizedToDelete"
-                    :dusk="`${resource['id'].value}-delete-button`"
-                    class="toolbar-button hover:o1-text-primary-500 o1-px-2 disabled:o1-opacity-50 disabled:o1-pointer-events-none"
-                    @click.stop="openDeleteModal"
-                >
-                    <Icon type="trash"/>
-                </button>
+                />
 
                 <!-- Restore Resource Link -->
-                <button
+                <Button
                     v-if="
-            authorizedToRestoreAnyResources &&
-            resource.softDeleted &&
-            !viaManyToMany
-          "
+                        authorizedToRestoreAnyResources &&
+                        resource.softDeleted &&
+                        !viaManyToMany
+                    "
                     v-tooltip.click="__('Restore')"
                     :aria-label="__('Restore')"
                     :disabled="!resource.authorizedToRestore"
-                    :dusk="`${resource['id'].value}-restore-button`"
-                    class="toolbar-button hover:o1-text-primary-500 o1-px-2 disabled:o1-opacity-50 disabled:o1-pointer-events-none"
+                    :dusk="`${resource.id.value}-restore-button`"
+                    type="button"
                     @click.stop="openRestoreModal"
-                >
-                    <Icon type="refresh"/>
-                </button>
+                    icon="arrow-path"
+                    variant="action"
+                />
 
                 <DeleteResourceModal
                     :mode="viaManyToMany ? 'detach' : 'delete'"
