@@ -91,7 +91,7 @@
                 <!-- Start CDE Override -->
                 <!-- Preview Resource Link -->
                 <a
-                    v-if="authorizedToViewAnyResources"
+                    v-if="authorizedToViewAnyResources && resource.previewHasFields"
                     v-tooltip.click="__('Preview')"
                     :aria-label="__('Preview')"
                     :data-testid="`${testId}-preview-button`"
